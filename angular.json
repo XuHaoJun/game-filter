@@ -4,5 +4,10 @@
   "projects": {
     "game-filter": "apps/game-filter",
     "game-filter-e2e": "apps/game-filter-e2e"
+  },
+  "schematics": {
+    "@ngneat/spectator:spectator-component": {
+      "jest": true
+    }
   }
 }

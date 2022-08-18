@@ -1,22 +1,18 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { createComponentFactory, Spectator } from '@ngneat/spectator/jest';
 
 import { DashboardHomePageComponent } from './dashboard-home-page.component';
 
 describe('DashboardHomePageComponent', () => {
-  let component: DashboardHomePageComponent;
-  let fixture: ComponentFixture<DashboardHomePageComponent>;
+  let spectator: Spectator<DashboardHomePageComponent>;
+  const createComponent = createComponentFactory(DashboardHomePageComponent);
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      declarations: [DashboardHomePageComponent],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(DashboardHomePageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  beforeEach(() => (spectator = createComponent()));
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(spectator.component).toBeTruthy();
+  });
+
+  it('should have a success class by default', () => {
+    expect(spectator.query('p')).toHaveExactText('dashboard-home-page works!');
   });
 });
