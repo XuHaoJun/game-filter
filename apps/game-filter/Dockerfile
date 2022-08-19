@@ -1,5 +1,5 @@
-ARG NODE_VERSION="16.14.2"
-ARG ALPINE_VERSION="3.15"
+ARG NODE_VERSION="16.17.0"
+ARG ALPINE_VERSION="3.16"
 
 
 
@@ -16,10 +16,10 @@ FROM base-stage AS dependencies-stage
 COPY package.json package-lock.json ./
 COPY angular.json nx.json decorate-angular-cli.js tsconfig.base.json ./
 # 只安裝 production 相關模組，並複製出來，準備給 Release Stage 使用
-RUN npm ci --production
+RUN npm ci --omit=dev
 RUN cp -R node_modules /production_node_modules
 # prod & dev 模組全部安裝
-RUN npm ci --also=dev
+RUN npm ci --include=dev
 
 
 #
