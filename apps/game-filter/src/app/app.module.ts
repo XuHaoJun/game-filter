@@ -5,14 +5,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HomeComponent } from './home.component';
 import { ApiInterceptor } from './interceptors/api.interceptor';
-import { NxWelcomeComponent } from './nx-welcome.component';
+import { MainLayoutModule } from './layouts/main-layout/main-layout.module';
 
 @NgModule({
-  declarations: [AppComponent, NxWelcomeComponent],
+  declarations: [AppComponent, HomeComponent],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     BrowserAnimationsModule,
+    MainLayoutModule,
     AppRoutingModule,
   ],
   providers: [

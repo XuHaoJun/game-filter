@@ -18,6 +18,7 @@
           "apps/game-filter/src/assets"
         ],
         "styles": [
+          "./node_modules/@fortawesome/fontawesome-free/css/all.min.css",
           "./node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
           "apps/game-filter/src/styles.scss"
         ],

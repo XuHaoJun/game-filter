@@ -1,0 +1,47 @@
+<style>
+  body {
+    height: 100vh;
+    min-height: 100vh;
+  }
+</style>
+<mat-toolbar [class.mat-elevation-z6]="true" color="primary">
+  <div class="md:container md:mx-auto">
+    <div class="flex flex-row items-center">
+      <a class="md:mr-8" routerLink="/" (click)="handleGoHomeClick($event)">Home</a>
+      <a
+        routerLink="/games/e7"
+        mat-button
+        [class.navbar-header-item-selected]="
+          (selectedGameName$ | async) === 'e7'
+        "
+        >E7</a
+      >
+      <a
+        routerLink="/games/poe"
+        mat-button
+        [class.navbar-header-item-selected]="
+          (selectedGameName$ | async) === 'poe'
+        "
+        >POE</a
+      >
+      <a
+        routerLink="/games/wf"
+        mat-button
+        [class.navbar-header-item-selected]="
+          (selectedGameName$ | async) === 'wf'
+        "
+        >WF</a
+      >
+      <div class="grow"></div>
+      <a href="https://github.com/XuHaoJun/game-filter" target="_blank">
+        <span class="fab fa-github"></span>
+      </a>
+    </div>
+  </div>
+</mat-toolbar>
+
+<main class="md:container md:mx-auto" id="main-content">
+  <ng-content></ng-content>
+</main>
+
+<footer></footer>
