@@ -4,15 +4,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+import { SubscribeModule } from '@ngneat/subscribe';
 
+import { DashboardModule } from '../../features/dashboard/dashboard.module';
 import { MainLayoutComponent } from './main-layout.component';
-import { MainLayoutQuery } from './state/main-layout.query';
-import { MainLayoutService } from './state/main-layout.service';
+
+const matModules = [MatToolbarModule, MatIconModule, MatButtonModule];
 
 @NgModule({
   declarations: [MainLayoutComponent],
-  imports: [CommonModule, RouterModule, MatToolbarModule, MatIconModule, MatButtonModule],
-  providers: [MainLayoutComponent, MainLayoutService, MainLayoutQuery],
+  imports: [
+    CommonModule,
+    SubscribeModule,
+    RouterModule,
+    DashboardModule,
+    ...matModules,
+  ],
+  providers: [MainLayoutComponent],
   exports: [MainLayoutComponent],
 })
 export class MainLayoutModule {}

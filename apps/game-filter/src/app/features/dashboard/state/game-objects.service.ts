@@ -3,10 +3,16 @@ import { Injectable } from '@angular/core';
 
 import { GameObjectsStore } from './game-objects.store';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class GameObjectsService {
   constructor(
     private gameObjectsStore: GameObjectsStore,
     private http: HttpClient
   ) {}
+
+  setGameName(gameName?: string) {
+    this.gameObjectsStore.updateUI({
+      gameName,
+    });
+  }
 }

@@ -1,46 +1,51 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
+  OnDestroy,
   OnInit
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, Observable, of, tap } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { map, Observable, of } from 'rxjs';
 
-import { MainLayoutService } from '../../../../layouts/main-layout/state/main-layout.service';
+import { GameObjectsQuery } from '../../state/game-objects.query';
+import { GameObjectsService } from '../../state/game-objects.service';
 
 interface DashboarddRouteParams {
   gameName?: string;
 }
 
+@UntilDestroy()
 @Component({
   selector: 'game-filter-dashboard-home-page',
   templateUrl: './dashboard-home-page.component.html',
   styleUrls: ['./dashboard-home-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DashboardHomePageComponent implements OnInit {
-  gameName$: Observable<string | null> = of(null);
+export class DashboardHomePageComponent implements OnInit, OnDestroy {
+  gameName$: Observable<DashboarddRouteParams['gameName']> = of(undefined);
 
   constructor(
     private route: ActivatedRoute,
-    private mainLayoutService: MainLayoutService,
-    private cdr: ChangeDetectorRef
+    private gameObjectsQuery: GameObjectsQuery,
+    private gameObjectsService: GameObjectsService
   ) {}
 
   ngOnInit(): void {
+    this.gameName$ = this.gameObjectsQuery.gameName$;
     this.route.params
       .pipe(
-        map((params) => {
-          return params as DashboarddRouteParams;
-        }),
-        tap((params) => {
-          this.mainLayoutService.setSelectedGameName(params.gameName);
-        })
+        map<DashboarddRouteParams, DashboarddRouteParams['gameName']>(
+          ({ gameName }) => gameName
+        ),
+        untilDestroyed(this)
       )
-      .subscribe((params) => {
-        this.gameName$ = of(params.gameName || null);
-        this.cdr.markForCheck();
+      .subscribe((gameName) => {
+        this.gameObjectsService.setGameName(gameName);
       });
+  }
+
+  ngOnDestroy(): void {
+    this.gameObjectsService.setGameName(undefined);
   }
 }
