@@ -13,7 +13,7 @@ export default {
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
-  transformIgnorePatterns: ['node_modules/(?!(.*\\.mjs$|url-join))'],
+  transformIgnorePatterns: ['node_modules/(?!(.*\\.mjs$|url-join|@datorama/akita))'],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',

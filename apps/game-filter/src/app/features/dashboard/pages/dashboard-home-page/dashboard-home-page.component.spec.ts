@@ -13,6 +13,6 @@ describe('DashboardHomePageComponent', () => {
   });
 
   it('should have a success class by default', () => {
-    expect(spectator.query('p')).toHaveExactText('dashboard-home-page works!');
+    expect(spectator.query('p')).toHaveExactText('home');
   });
 });

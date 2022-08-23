@@ -2,6 +2,10 @@
 
 Online demo: [http:/game-filter.herokuapp.com](http:/game-filter.herokuapp.com)
 
+## GameFilter backend repo
+
+[https://github.com/XuHaoJun/game-filter-bakcend](https://github.com/XuHaoJun/game-filter-bakcend)
+
 ## nx
 
 This project was generated using [Nx](https://nx.dev).

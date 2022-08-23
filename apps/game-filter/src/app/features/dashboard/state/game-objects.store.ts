@@ -1,31 +1,18 @@
 import { Injectable } from '@angular/core';
-import {
-  EntityState,
-  EntityStore,
-  isFunction,
-  StoreConfig
-} from '@datorama/akita';
+import { EntityStore, isFunction, StoreConfig } from '@datorama/akita';
 import { always } from 'rambda';
-
-type GameObject = Record<string, any>;
-
-export interface GameObjectsState extends EntityState<GameObject, number> {
-  ui: {
-    gameName?: string;
-    filter: Record<string, any>;
-  };
-}
-
-export type GameObjectsUIState = GameObjectsState['ui'];
-export type GameObjectsUIStateMapper = (
-  state: GameObjectsUIState
-) => Partial<GameObjectsUIState>;
+import {
+  createUIInitState,
+  GameObjectsState,
+  GameObjectsUIState,
+  GameObjectsUIStateMapper
+} from './game-objects.model';
 
 @Injectable({ providedIn: 'root' })
 @StoreConfig({ name: 'game-objects', idKey: '_id' })
 export class GameObjectsStore extends EntityStore<GameObjectsState> {
   constructor() {
-    super({ ui: { filter: {} } });
+    super({ ui: createUIInitState() });
   }
 
   updateUI(newState: Partial<GameObjectsUIState> | GameObjectsUIStateMapper) {
@@ -34,5 +21,9 @@ export class GameObjectsStore extends EntityStore<GameObjectsState> {
       ...state,
       ui: { ...ui, ...mapper(ui) },
     }));
+  }
+
+  resetUI() {
+    this.updateUI(createUIInitState());
   }
 }

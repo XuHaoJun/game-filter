@@ -42,10 +42,18 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
       )
       .subscribe((gameName) => {
         this.gameObjectsService.setGameName(gameName);
+        this.gameObjectsService.setTableDisplayColumns(['name', 'rarity', 'attribute', 'role']);
+        if (gameName === 'e7') {
+          this.gameObjectsService
+            .getGameObjects(gameName, 'heroes')
+            .pipe(untilDestroyed(this))
+            .subscribe();
+        }
       });
   }
 
   ngOnDestroy(): void {
-    this.gameObjectsService.setGameName(undefined);
+    this.gameObjectsService.resetUIState();
+    this.gameObjectsService.removeGameObjects();
   }
 }
