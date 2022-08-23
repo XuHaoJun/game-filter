@@ -4,6 +4,7 @@ import { APP_BASE_HREF } from '@angular/common';
 import { ngExpressEngine } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { existsSync } from 'fs';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { join } from 'path';
 
 import { AppServerModule } from './main.server';
@@ -12,7 +13,9 @@ import { AppServerModule } from './main.server';
 export function app(): express.Express {
   const server = express();
   const distFolder = join(process.cwd(), 'dist/apps/game-filter/browser');
-  const indexHtml = existsSync(join(distFolder, 'index.original.html')) ? 'index.original.html' : 'index';
+  const indexHtml = existsSync(join(distFolder, 'index.original.html'))
+    ? 'index.original.html'
+    : 'index';
 
   // Our Universal express-engine (found @ https://github.com/angular/universal/tree/main/modules/express-engine)
   server.engine(
@@ -26,9 +29,17 @@ export function app(): express.Express {
   server.set('views', distFolder);
 
   // Example Express Rest API endpoints
-  server.get('/api/**', (req, res) => {
-    res.json([{ id: 1 }]);
-  });
+  // server.get('/api', (req, res) => {
+  //   res.json(e7Heros);
+  // });
+  const apiProxyUrl = process.env['API_PROXY'];
+  if (apiProxyUrl) {
+    const apiProxy = createProxyMiddleware('/api', {
+      target: apiProxyUrl,
+    });
+    server.use(apiProxy);
+  }
+
   // Serve static files from /browser
   server.get(
     '*.*',
@@ -39,7 +50,10 @@ export function app(): express.Express {
 
   // All regular routes use the Universal engine
   server.get('*', (req, res) => {
-    res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+    res.render(indexHtml, {
+      req,
+      providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }],
+    });
   });
 
   return server;
