@@ -10,11 +10,22 @@
     </mat-card>
 
     <mat-card class="col-span-9">
-      <p>game object - search</p>
+      <p>game object - fuzzy search</p>
     </mat-card>
 
-    <div class="col-span-3">
-      <div class="grid grid-flow-row gap-2">
+    <div class="col-span-3" [ngSwitch]="gameName">
+      <div class="grid grid-flow-row gap-2" *ngSwitchCase="'e7'">
+        <mat-card style="max-height: 300px">
+          <game-filter-e7-bool-group-list></game-filter-e7-bool-group-list>
+        </mat-card>
+        <mat-card style="height: 128px">
+          <p>and group 2</p>
+        </mat-card>
+        <mat-card style="height: 402px">
+          <p>and group 2</p>
+        </mat-card>
+      </div>
+      <div class="grid grid-flow-row gap-2" *ngSwitchDefault>
         <mat-card style="height: 256px">
           <p>and group 2</p>
         </mat-card>
@@ -30,10 +41,13 @@
     <div class="col-span-9">
       <div class="grid grid-flow-row gap-2">
         <mat-card>
-          <p>game object analytic info</p>
+          <p>total: {{ (gameObjects$ | async)?.length }}</p>
         </mat-card>
-        <mat-card style="height: 100vh">
-          <p>game object data table</p>
+        <mat-card *ngIf="gameName === 'e7'">
+          <game-filter-e7-heroes-table
+            [dataSource]="(gameObjects$ | async) || [] | as: E7Heroes"
+          >
+          </game-filter-e7-heroes-table>
         </mat-card>
       </div>
     </div>

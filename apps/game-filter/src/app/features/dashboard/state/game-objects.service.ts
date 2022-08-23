@@ -6,7 +6,7 @@ import {
   E7Hero,
   E7HeroesResponse,
   E7SimpleHero
-} from '../interfaces/e7.interface';
+} from '../../../interfaces/e7.interface';
 
 import { GameObjectsStore } from './game-objects.store';
 
@@ -64,15 +64,21 @@ export class GameObjectsService {
   }
 }
 
-function simpleHeroToHero(x: E7SimpleHero, buffs: E7Buff[]): E7Hero {
-  const getBuff = (bid: string) => buffs.find((b) => b.id === bid);
+function simpleHeroToHero(x: E7SimpleHero, fullBuffs: E7Buff[]): E7Hero {
+  const getBuff = (bid: string) => fullBuffs.find((b) => b.id === bid);
   const toBuffs = (bids: string[]) =>
     bids.map(getBuff).filter((b) => b !== undefined) as E7Buff[];
 
+  const buffs = toBuffs(x.buffs);
+  const debuffs = toBuffs(x.debuffs);
+  const common = toBuffs(x.common);
+  const allBuffs = [...buffs, ...debuffs, ...common];
+
   return {
     ...x,
-    buffs: toBuffs(x.buffs),
-    debuffs: toBuffs(x.debuffs),
-    common: toBuffs(x.common),
+    buffs,
+    debuffs,
+    common,
+    allBuffs,
   };
 }

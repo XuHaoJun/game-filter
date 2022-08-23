@@ -15,7 +15,6 @@ describe('MainLayoutComponent', () => {
     component: MainLayoutComponent,
     imports: [MainLayoutModule],
     stubsEnabled: false,
-    params: { gameName: 'e7' },
     providers: [
       mockProvider(GameObjectsQuery, {
         gameName$: of('e7'),
@@ -36,7 +35,7 @@ describe('MainLayoutComponent', () => {
     expect(spectator.component).toBeTruthy();
   });
 
-  it('navbar selcted game btn', async () => {
+  it('navbar click game btn for check selected class and location', async () => {
     const spectator = createComponent();
 
     await spectator.fixture.whenStable();

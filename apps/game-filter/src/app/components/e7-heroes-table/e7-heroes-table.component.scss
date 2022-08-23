@@ -1,0 +1,20 @@
+table.mat-table {
+  width: 100%;
+}
+
+$buff-color: #00008f;
+$debuff-color: #8f0000;
+
+.buff-type {
+  color: $buff-color;
+}
+
+.debuff-type {
+  color: $debuff-color;
+}
+
+.e7-hero-avatar {
+  @extend .mat-card-avatar !optional;
+  height: 80px;
+  width: 80px;
+}

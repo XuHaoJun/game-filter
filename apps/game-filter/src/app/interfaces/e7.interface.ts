@@ -44,6 +44,7 @@ export interface E7Hero {
   buffs: E7Buff[];
   debuffs: E7Buff[];
   common: E7Buff[];
+  allBuffs: E7Buff[];
 }
 
 export interface E7Buff {

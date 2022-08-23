@@ -32,12 +32,13 @@ export function app(): express.Express {
   // server.get('/api', (req, res) => {
   //   res.json(e7Heros);
   // });
-  const apiProxyUrl = process.env['API_PROXY'];
-  if (apiProxyUrl) {
-    const apiProxy = createProxyMiddleware('/api', {
-      target: apiProxyUrl,
+  const apiProxyServer = process.env['API_PROXY'];
+  if (apiProxyServer) {
+    const apiProxy = createProxyMiddleware({
+      target: `${apiProxyServer}/api`,
+      changeOrigin: true,
     });
-    server.use(apiProxy);
+    server.use('/api', apiProxy);
   }
 
   // Serve static files from /browser
