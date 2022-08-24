@@ -56,6 +56,7 @@ export interface E7Buff {
   assets: {
     icon: string;
   };
+  heroeIds?: string[];
 }
 
 export interface E7HeroesResponse {

@@ -117,7 +117,8 @@ https://blog.nrwl.io/server-side-rendering-ssr-with-angular-for-nx-workspaces-14
 ## heroku deploy
 
 ```shell
-docker build -f ./apps/game-filter/Dockerfile -t registry.heroku.com/game-filter/web
+# require backend server for prerender
+docker build --add-host=host.docker.internal:host-gateway -f ./apps/game-filter/Dockerfile -t registry.heroku.com/game-filter/web .
 docker push registry.heroku.com/game-filter/web:latest
 heroku container:relase web -a game-filter
 ```

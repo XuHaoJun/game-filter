@@ -15,8 +15,11 @@
 
     <div class="col-span-3" [ngSwitch]="gameName">
       <div class="grid grid-flow-row gap-2" *ngSwitchCase="'e7'">
-        <mat-card style="max-height: 300px">
-          <game-filter-e7-bool-group-list></game-filter-e7-bool-group-list>
+        <mat-card class="max-h-60 overflow-auto">
+          <game-filter-e7-bool-group-list
+            [dataType]="'buff'"
+            [dataSource]="(e7buffs$ | async) || []"
+          ></game-filter-e7-bool-group-list>
         </mat-card>
         <mat-card style="height: 128px">
           <p>and group 2</p>

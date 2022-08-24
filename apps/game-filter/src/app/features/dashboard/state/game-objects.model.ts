@@ -2,7 +2,7 @@ import { EntityState } from '@datorama/akita';
 
 export type GameObject = Record<string, any>;
 
-export interface GameObjectsState extends EntityState<GameObject, number> {
+export interface GameObjectsState extends EntityState<GameObject, string> {
   ui: {
     gameName?: string;
     catagory?: string;
@@ -18,4 +18,8 @@ export type GameObjectsUIStateMapper = (
 
 export function createUIInitState(): GameObjectsUIState {
   return { filter: {}, tableDisplayColumns: [] };
+}
+
+export function createInitState(): GameObjectsState {
+  return { ui: createUIInitState() };
 }

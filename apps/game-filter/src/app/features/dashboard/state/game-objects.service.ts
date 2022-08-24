@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of, share, tap } from 'rxjs';
+
 import {
   E7Buff,
   E7Hero,
@@ -65,8 +66,9 @@ export class GameObjectsService {
 }
 
 function simpleHeroToHero(x: E7SimpleHero, fullBuffs: E7Buff[]): E7Hero {
-  const getBuff = (bid: string) => fullBuffs.find((b) => b.id === bid);
-  const toBuffs = (bids: string[]) =>
+  const getBuff = (bid: string): E7Buff | undefined =>
+    fullBuffs.find((b) => b.id === bid);
+  const toBuffs = (bids: string[]): E7Buff[] =>
     bids.map(getBuff).filter((b) => b !== undefined) as E7Buff[];
 
   const buffs = toBuffs(x.buffs);
@@ -74,11 +76,16 @@ function simpleHeroToHero(x: E7SimpleHero, fullBuffs: E7Buff[]): E7Hero {
   const common = toBuffs(x.common);
   const allBuffs = [...buffs, ...debuffs, ...common];
 
-  return {
+  const hero = {
     ...x,
     buffs,
     debuffs,
     common,
     allBuffs,
   };
+  const buffAddHeroId = (b: E7Buff, h: E7Hero) => {
+    b.heroeIds = [...(b.heroeIds || []), h.id];
+  };
+  allBuffs.forEach((b) => buffAddHeroId(b, hero));
+  return hero;
 }

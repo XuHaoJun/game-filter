@@ -4,6 +4,7 @@ import {
   Input,
   OnInit
 } from '@angular/core';
+import { E7Buff } from '../../interfaces/e7.interface';
 
 @Component({
   selector: 'game-filter-e7-bool-group-list',
@@ -12,9 +13,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class E7BoolGroupListComponent implements OnInit {
-  @Input() dataSource: any[] = [];
-
-
+  @Input() dataType = 'buff';
+  @Input() dataSource: E7Buff[] = [];
 
   constructor() {}
 

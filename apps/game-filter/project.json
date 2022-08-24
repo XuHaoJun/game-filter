@@ -137,6 +137,23 @@
         }
       },
       "defaultConfiguration": "development"
+    },
+    "prerender": {
+      "builder": "@nguniversal/builders:prerender",
+      "options": {
+        "routes": ["/", "/games/e7"]
+      },
+      "configurations": {
+        "production": {
+          "browserTarget": "game-filter:build:production",
+          "serverTarget": "game-filter:server:production"
+        },
+        "development": {
+          "browserTarget": "game-filter:build:development",
+          "serverTarget": "game-filter:server:development"
+        }
+      },
+      "defaultConfiguration": "production"
     }
   },
   "tags": []

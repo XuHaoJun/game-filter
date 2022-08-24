@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EntityStore, isFunction, StoreConfig } from '@datorama/akita';
 import { always } from 'rambda';
+
 import {
+  createInitState,
   createUIInitState,
   GameObjectsState,
   GameObjectsUIState,
@@ -9,10 +11,10 @@ import {
 } from './game-objects.model';
 
 @Injectable({ providedIn: 'root' })
-@StoreConfig({ name: 'game-objects', idKey: '_id' })
+@StoreConfig({ name: 'game-objects', idKey: 'id' })
 export class GameObjectsStore extends EntityStore<GameObjectsState> {
   constructor() {
-    super({ ui: createUIInitState() });
+    super(createInitState());
   }
 
   updateUI(newState: Partial<GameObjectsUIState> | GameObjectsUIStateMapper) {

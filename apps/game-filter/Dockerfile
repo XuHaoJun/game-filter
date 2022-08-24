@@ -26,13 +26,14 @@ RUN npm ci --include=dev
 ## Build Stage
 FROM dependencies-stage AS build-stage
 ENV NODE_ENV=production
+ARG API_PROXY=http://host.docker.internal:8080
 
 COPY libs libs
 COPY tools tools
-COPY apps/game-filter apps/game-filter
 COPY apps/game-filter-e2e apps/game-filter-e2e
+COPY apps/game-filter apps/game-filter
 
-RUN npx ng build && npx ng run game-filter:server
+RUN npx ng build && npx ng run game-filter:server && npx ng run game-filter:prerender
 
 
 #
