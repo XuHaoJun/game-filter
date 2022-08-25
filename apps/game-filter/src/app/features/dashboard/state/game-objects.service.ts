@@ -8,6 +8,7 @@ import {
   E7HeroesResponse,
   E7SimpleHero
 } from '../../../interfaces/e7.interface';
+import { GameObjectsUIState } from './game-objects.model';
 
 import { GameObjectsStore } from './game-objects.store';
 
@@ -24,14 +25,12 @@ export class GameObjectsService {
     });
   }
 
-  setTableDisplayColumns(tableDisplayColumns: string[]) {
-    this.gameObjectsStore.updateUI({
-      tableDisplayColumns,
-    });
-  }
-
   resetUIState() {
     this.gameObjectsStore.resetUI();
+  }
+
+  setFilter(filter: GameObjectsUIState['filter']) {
+    this.gameObjectsStore.updateUI({ filter });
   }
 
   getGameObjects(
@@ -44,14 +43,15 @@ export class GameObjectsService {
         return this.http
           .get<E7HeroesResponse>(`/api/games/e7/${category}`)
           .pipe(
+            share(),
             tap((heroesRes) => {
               this.gameObjectsStore.add(
                 heroesRes.heroes.map((x) =>
                   simpleHeroToHero(x, heroesRes.buffs)
                 )
               );
-            }),
-            share()
+              this.gameObjectsStore.setLoading(false);
+            })
           );
       }
       default: {

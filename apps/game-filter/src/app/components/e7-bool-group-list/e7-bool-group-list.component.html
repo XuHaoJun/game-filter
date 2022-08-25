@@ -1,3 +1,19 @@
-<mat-list dense *ngFor="let x of dataSource">
-  <mat-list-item> {{ x.name }} </mat-list-item>
-</mat-list>
+<ng-container [ngSwitch]="dataType">
+  <ng-container *ngSwitchCase="'buff'">
+    <mat-list dense *ngFor="let item of _dataSource$ | async">
+      <mat-list-item
+        (click)="handleClickListItem($event, item)"
+        [class.bg-green-100]="item.selection.isSelected"
+      >
+        <div class="flex flex-row items-center w-full">
+          <img [src]="item.value.assets.icon" class="mr-2" />
+          <span>
+            {{ item.value.name }}
+          </span>
+          <div class="grow"></div>
+          <span> {{ item.analytic.usedRate * 100 }}% </span>
+        </div>
+      </mat-list-item>
+    </mat-list>
+  </ng-container>
+</ng-container>

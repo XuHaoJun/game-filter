@@ -1,13 +1,17 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { enableAkitaProdMode, persistState } from '@datorama/akita';
+import { enableMapSet, setAutoFreeze } from 'immer';
 
 import { AppModule } from './app/app.module';
 import { loadHttpMock } from './app/mocks/http/http-main-mock';
 import { environment } from './environments/environment';
 
+setAutoFreeze(false);
+enableMapSet();
+
 persistState({
-  include: ['game-objects'],
+  include: ['game-infos'],
 });
 
 if (environment.production) {

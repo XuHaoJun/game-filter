@@ -13,19 +13,21 @@
       <p>game object - fuzzy search</p>
     </mat-card>
 
-    <div class="col-span-3" [ngSwitch]="gameName">
-      <div class="grid grid-flow-row gap-2" *ngSwitchCase="'e7'">
-        <mat-card class="max-h-60 overflow-auto">
-          <game-filter-e7-bool-group-list
-            [dataType]="'buff'"
-            [dataSource]="(e7buffs$ | async) || []"
-          ></game-filter-e7-bool-group-list>
-        </mat-card>
-        <mat-card style="height: 128px">
-          <p>and group 2</p>
-        </mat-card>
-        <mat-card style="height: 402px">
-          <p>and group 2</p>
+    <div [ngSwitch]="gameName" class="col-span-3">
+      <div *ngSwitchCase="'e7'" class="grid grid-flow-row gap-2">
+        <mat-card>
+          <p>Buffs/Debuffs</p>
+          <div class="max-h-60 overflow-auto">
+            <game-filter-e7-bool-group-list
+              [dataType]="'buff'"
+              [dataSource]="(e7buffs$ | async) || []"
+              [itemAnalytics]="[
+                { itemId: '2', usedRate: 0.7, gameObjectIds: [] }
+              ]"
+              [itemSelections]="e7buffSelections"
+              (selectionsChange)="handleE7buffSelectionChange($event)"
+            ></game-filter-e7-bool-group-list>
+          </div>
         </mat-card>
       </div>
       <div class="grid grid-flow-row gap-2" *ngSwitchDefault>
@@ -44,11 +46,11 @@
     <div class="col-span-9">
       <div class="grid grid-flow-row gap-2">
         <mat-card>
-          <p>total: {{ (gameObjects$ | async)?.length }}</p>
+          <p>total: {{ (filteredGameObjects$ | async)?.length }}</p>
         </mat-card>
         <mat-card *ngIf="gameName === 'e7'">
           <game-filter-e7-heroes-table
-            [dataSource]="(gameObjects$ | async) || [] | as: E7Heroes"
+            [dataSource]="(filteredGameObjects$ | async) || [] | as: E7Heroes"
           >
           </game-filter-e7-heroes-table>
         </mat-card>

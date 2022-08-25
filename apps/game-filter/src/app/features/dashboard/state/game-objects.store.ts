@@ -26,6 +26,11 @@ export class GameObjectsStore extends EntityStore<GameObjectsState> {
   }
 
   resetUI() {
-    return this.updateUI(createUIInitState());
+    return this.update(({ ui, ...state }) => {
+      return {
+        ...state,
+        ui: createUIInitState(),
+      };
+    });
   }
 }

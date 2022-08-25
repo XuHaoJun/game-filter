@@ -1,8 +1,23 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit
+} from '@angular/core';
 import { UntilDestroy } from '@ngneat/until-destroy';
-import { Observable, of } from 'rxjs';
-import { GameObjectsQuery } from '../../features/dashboard/state/game-objects.query';
+import { fromInput } from 'observable-from-input';
+import { combineLatest, map, Observable, of } from 'rxjs';
+
 import { GameObjectsService } from '../../features/dashboard/state/game-objects.service';
+import type { GameInfo } from '../../states/game-infos/game-infos.model';
+
+interface GameLink extends GameInfo {
+  routerLink: string;
+  ui: {
+    isActive: boolean;
+    id: string;
+  };
+}
 
 @UntilDestroy()
 @Component({
@@ -12,18 +27,31 @@ import { GameObjectsService } from '../../features/dashboard/state/game-objects.
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainLayoutComponent implements OnInit {
+  @Input() gameName?: string;
   gameName$: Observable<string | undefined> = of(undefined);
 
-  constructor(
-    private gameObjectsQuery: GameObjectsQuery,
-    private gameObjectsService: GameObjectsService
-  ) {}
+  @Input() gameInfos: GameInfo[] = [];
+  gameInfos$: Observable<GameInfo[]> = of([]);
 
-  ngOnInit(): void {
-    this.gameName$ = this.gameObjectsQuery.gameName$;
+  gameLinks$: Observable<GameLink[]> = of([]);
+
+  constructor(private gameObjectsService: GameObjectsService) {
+    this.gameName$ = fromInput<MainLayoutComponent>(this)('gameName');
+    this.gameInfos$ = fromInput<MainLayoutComponent>(this)('gameInfos');
   }
 
-  handleGoHomeClick(event?: MouseEvent) {
-    this.gameObjectsService.setGameName(undefined);
+  ngOnInit(): void {
+    this.gameLinks$ = combineLatest([this.gameName$, this.gameInfos$]).pipe(
+      map(([gameName, gameInfos]) =>
+        gameInfos.map((g) => ({
+          ...g,
+          routerLink: `/games/${g.name}`,
+          ui: {
+            isActive: gameName === g.name,
+            id: `navbar-games-${g.name}`,
+          },
+        }))
+      )
+    );
   }
 }

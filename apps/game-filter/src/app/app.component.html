@@ -1,4 +1,8 @@
 <meta name="viewport" content="width=device-width" />
-<game-filter-main-layout>
+
+<game-filter-main-layout
+  [gameName]="(gameName$ | async) || undefined"
+  [gameInfos]="(gameInfos$ | async) || []"
+>
   <router-outlet></router-outlet>
 </game-filter-main-layout>
