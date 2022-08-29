@@ -1,5 +1,7 @@
 import { EntityState } from '@datorama/akita';
 
+import { E7Role } from '../../../interfaces/e7.interface';
+
 export type GameObject = Record<string, any>;
 
 export interface GameObjectFilter {
@@ -12,6 +14,10 @@ export interface GameObjectsState extends EntityState<GameObject, string> {
     gameName?: string;
     catagory?: string;
     filter: GameObjectFilter;
+  };
+
+  e7: {
+    roles: E7Role[];
   };
 }
 
@@ -29,5 +35,10 @@ export function createUIInitState(): GameObjectsUIState {
 }
 
 export function createInitState(): GameObjectsState {
-  return { ui: createUIInitState() };
+  return {
+    ui: createUIInitState(),
+    e7: {
+      roles: [],
+    },
+  };
 }

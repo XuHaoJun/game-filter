@@ -1,3 +1,5 @@
+import { ItemIdentity } from './analytics.interface';
+
 export interface SelfDevotion {
   type: string;
 }
@@ -29,7 +31,7 @@ export interface E7SimpleHero {
   common: string[];
 }
 
-export interface E7Hero {
+export interface E7Hero extends ItemIdentity {
   _id: string;
   id: string;
   name: string;
@@ -47,7 +49,7 @@ export interface E7Hero {
   allBuffs: E7Buff[];
 }
 
-export interface E7Buff {
+export interface E7Buff extends ItemIdentity {
   _id: string;
   id: string;
   type: string;
@@ -56,11 +58,21 @@ export interface E7Buff {
   assets: {
     icon: string;
   };
+  // extra
   heroeIds?: string[];
+}
+
+export interface E7Role extends ItemIdentity {
+  id: string;
+  name: string;
+  assets: {
+    icon: string;
+  };
 }
 
 export interface E7HeroesResponse {
   total: number;
   heroes: E7SimpleHero[];
   buffs: E7Buff[];
+  roles: E7Role[];
 }

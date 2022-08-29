@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="dataType">
   <ng-container *ngSwitchCase="'buff'">
-    <mat-list dense *ngFor="let item of _dataSource$ | async">
+    <mat-list dense *ngFor="let item of _dataSource$ | async | as: E7BuffItems">
       <mat-list-item
         (click)="handleClickListItem($event, item)"
         [class.bg-green-100]="item.selection.isSelected"
@@ -11,9 +11,24 @@
             {{ item.value.name }}
           </span>
           <div class="grow"></div>
-          <span> {{ item.analytic.usedRate * 100 }}% </span>
+          <span> {{ item.analytic.usedRate * 100 | number }}% </span>
         </div>
       </mat-list-item>
     </mat-list>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="'role'">
+    <div class="flex flex-row gap-4">
+      <span
+        *ngFor="let item of _dataSource$ | async | as: E7RoleItems"
+        [class.bg-green-100]="item.selection.isSelected"
+        matBadge="{{ item.analytic.usedRate * 100 | number }}%"
+        matBadgePosition="below after"
+        matBadgeColor="accent"
+        (click)="handleClickListItem($event, item)"
+      >
+        <img [src]="item.value.assets.icon" />
+      </span>
+    </div>
   </ng-container>
 </ng-container>

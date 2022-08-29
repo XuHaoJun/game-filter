@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import produce from 'immer';
 import { Observable, of, share, tap } from 'rxjs';
 
 import {
@@ -33,8 +34,12 @@ export class GameObjectsService {
     this.gameObjectsStore.updateUI({ filter });
   }
 
+  setFilterBySelections() {
+    // this.gameObjectsStore.updateUI({ filter });
+  }
+
   getGameObjects(
-    gameName: string,
+    gameName: 'e7',
     category: string
   ): Observable<E7HeroesResponse> {
     switch (gameName) {
@@ -50,6 +55,11 @@ export class GameObjectsService {
                   simpleHeroToHero(x, heroesRes.buffs)
                 )
               );
+              this.gameObjectsStore.update((state) => {
+                return produce(state, (draft) => {
+                  draft.e7.roles = heroesRes.roles;
+                });
+              });
               this.gameObjectsStore.setLoading(false);
             })
           );

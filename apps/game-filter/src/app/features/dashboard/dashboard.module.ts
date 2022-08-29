@@ -4,8 +4,9 @@ import { NgModule } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { SubscribeModule } from '@ngneat/subscribe';
 import { NgAsModule } from 'ng-as';
-import { E7BoolGroupListModule } from '../../components/e7-bool-group-list/e7-bool-group-list.module';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
+import { E7BoolGroupListModule } from '../../components/e7-bool-group-list/e7-bool-group-list.module';
 import { E7HeroesTableModule } from '../../components/e7-heroes-table/e7-heroes-table.module';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardHomePageComponent } from './pages/dashboard-home-page/dashboard-home-page.component';
@@ -20,6 +21,7 @@ import { DashboardHomePageComponent } from './pages/dashboard-home-page/dashboar
     E7HeroesTableModule,
     E7BoolGroupListModule,
     NgAsModule,
+    NgScrollbarModule,
     MatCardModule,
   ],
   providers: [DashboardHomePageComponent],

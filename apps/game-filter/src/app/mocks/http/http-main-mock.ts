@@ -2835,6 +2835,50 @@ export async function loadHttpMock() {
           },
         },
       ],
+      roles: [
+        {
+          id: 'knight',
+          name: 'knight',
+          assets: {
+            icon: 'https://assets.epicsevendb.com/class/cm_icon_role_knight.png',
+          },
+        },
+        {
+          id: 'warrior',
+          name: 'warrior',
+          assets: {
+            icon: 'https://assets.epicsevendb.com/class/cm_icon_role_warrior.png',
+          },
+        },
+        {
+          id: 'thief',
+          name: 'thief',
+          assets: {
+            icon: 'https://assets.epicsevendb.com/class/cm_icon_role_thief.png',
+          },
+        },
+        {
+          id: 'mage',
+          name: 'mage',
+          assets: {
+            icon: 'https://assets.epicsevendb.com/class/cm_icon_role_mage.png',
+          },
+        },
+        {
+          id: 'soul-weaver',
+          name: 'soul-weaver',
+          assets: {
+            icon: 'https://assets.epicsevendb.com/class/cm_icon_role_soul-weaver.png',
+          },
+        },
+        {
+          id: 'ranger',
+          name: 'ranger',
+          assets: {
+            icon: 'https://assets.epicsevendb.com/class/cm_icon_role_ranger.png',
+          },
+        },
+      ],
     },
     {
       delay: 10,

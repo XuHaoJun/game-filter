@@ -1,9 +1,16 @@
 <ng-container *subscribe="gameName$; let gameName; let error = error">
   <div class="pt-4 px-4 sm:px-2 grid grid-cols-12 gap-2">
-    <mat-card class="col-span-12">
-      <p>or group</p>
-      {{ gameName }}
+    <mat-card class="col-span-4">
+      <game-filter-e7-bool-group-list
+        [dataType]="'role'"
+        [dataSource]="(e7roles$ | async) || []"
+        [itemAnalytics]="(e7roleAnalytics$ | async) || []"
+        [itemSelections]="(e7roleSelections$ | async) || []"
+        (selectionsChange)="handleE7roleSelectionChange($event)"
+      ></game-filter-e7-bool-group-list>
     </mat-card>
+    <mat-card class="col-span-4"> </mat-card>
+    <mat-card class="col-span-4"> </mat-card>
 
     <mat-card class="col-span-3">
       <p>and group - search</p>
@@ -17,17 +24,15 @@
       <div *ngSwitchCase="'e7'" class="grid grid-flow-row gap-2">
         <mat-card>
           <p>Buffs/Debuffs</p>
-          <div class="max-h-60 overflow-auto">
+          <ng-scrollbar style="height: 240px">
             <game-filter-e7-bool-group-list
               [dataType]="'buff'"
               [dataSource]="(e7buffs$ | async) || []"
-              [itemAnalytics]="[
-                { itemId: '2', usedRate: 0.7, gameObjectIds: [] }
-              ]"
-              [itemSelections]="e7buffSelections"
+              [itemAnalytics]="(e7buffAnalytics$ | async) || []"
+              [itemSelections]="(e7buffSelections$ | async) || []"
               (selectionsChange)="handleE7buffSelectionChange($event)"
             ></game-filter-e7-bool-group-list>
-          </div>
+          </ng-scrollbar>
         </mat-card>
       </div>
       <div class="grid grid-flow-row gap-2" *ngSwitchDefault>
