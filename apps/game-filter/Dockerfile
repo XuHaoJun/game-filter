@@ -33,7 +33,7 @@ COPY tools tools
 COPY apps/game-filter-e2e apps/game-filter-e2e
 COPY apps/game-filter apps/game-filter
 
-RUN npx ng build && npx ng run game-filter:server && npx ng run game-filter:prerender
+RUN npx ng build && npx ng run game-filter:server
 
 
 #

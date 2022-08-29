@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HashMap, QueryEntity } from '@datorama/akita';
 import * as R from 'rambda';
 import { flatten as _flatten } from 'rambda';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
 import sift from 'sift';
 
 import {
@@ -11,14 +11,16 @@ import {
   TotalItemAnalytic
 } from '../../../interfaces/analytics.interface';
 import { E7Buff, E7Hero } from '../../../interfaces/e7.interface';
-import { GameObjectsState } from './game-objects.model';
+import { GameObjectFilter, GameObjectsState } from './game-objects.model';
 import { GameObjectsStore } from './game-objects.store';
 
 @Injectable({ providedIn: 'root' })
 export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
   gameName$ = this.select((state) => state.ui.gameName);
 
-  filter$ = this.select((state) => state.ui.filter);
+  filter$ = this.select((state) => state.ui.filter).pipe(
+    distinctUntilChanged<GameObjectFilter>(R.equals)
+  );
   filteredGameObjects$ = combineLatest([this.filter$, this.selectAll()]).pipe(
     map(([filter, gameObjects]) => {
       const filters: any[] = [];
@@ -57,8 +59,7 @@ export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
         return [];
       } else {
         const xs = _xs as E7Hero[];
-        const items = e7buffs as ItemIdentity[];
-        return getE7Analytics(xs, items, (x, item) =>
+        return getE7Analytics(xs, e7buffs, (x, item) =>
           Boolean(x.allBuffs.find((xb) => xb.id === item.id))
         );
       }
@@ -70,13 +71,12 @@ export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
     this.e7roles$,
     this.filteredGameObjects$,
   ]).pipe(
-    map(([state, _items, _xs]) => {
+    map(([state, e7roles, _xs]) => {
       if (state.ui.gameName !== 'e7') {
         return [];
       } else {
         const xs = _xs as E7Hero[];
-        const items = _items as ItemIdentity[];
-        return getE7Analytics(xs, items, (x, item) => x.role === item.id);
+        return getE7Analytics(xs, e7roles, (x, item) => x.role === item.id);
       }
     })
   );

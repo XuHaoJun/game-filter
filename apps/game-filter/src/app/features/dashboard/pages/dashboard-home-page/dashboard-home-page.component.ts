@@ -35,9 +35,6 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
   filter$: Observable<GameObjectsUIState['filter']> = of({
     groups: {},
   });
-  // currentFilter: GameObjectsUIState['filter'] = {
-  //   groups: {},
-  // };
   filteredGameObjects$: Observable<GameObject[] | E7Hero[]> = of([]);
 
   // e7
@@ -63,6 +60,7 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.gameName$ = this.gameObjectsQuery.gameName$;
 
+    this.filter$ = this.gameObjectsQuery.filter$;
     this.filteredGameObjects$ = this.gameObjectsQuery.filteredGameObjects$;
 
     // e7 stuff
@@ -100,7 +98,8 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
               draft.groups[groupName] = filter;
             }
           });
-        })
+        }),
+        untilDestroyed(this)
       )
       .subscribe((nextFilter) => {
         this.gameObjectsService.setFilter(nextFilter);
