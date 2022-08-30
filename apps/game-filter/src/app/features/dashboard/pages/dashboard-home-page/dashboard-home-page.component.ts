@@ -7,11 +7,18 @@ import {
 import { ActivatedRoute } from '@angular/router';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import * as R from 'rambda';
-import { combineLatest, map, Observable, of, Subject } from 'rxjs';
+import { map, Observable, of, Subject, tap, withLatestFrom } from 'rxjs';
 
 import produce from 'immer';
+import { WritableDraft } from 'immer/dist/types/types-external';
 import { ItemAnalytic } from '../../../../interfaces/analytics.interface';
-import { E7Buff, E7Hero, E7Role } from '../../../../interfaces/e7.interface';
+import {
+  E7Buff,
+  E7Element,
+  E7Hero,
+  E7Rarity,
+  E7Role
+} from '../../../../interfaces/e7.interface';
 import { ItemSelection } from '../../../../interfaces/selection.interface';
 import { itemSelectionsToFilter } from '../../../../utils/itemSelectionHelpers';
 import { GameObject, GameObjectsUIState } from '../../state/game-objects.model';
@@ -51,6 +58,19 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
   e7roleSelections$: Observable<ItemSelection[]> =
     this.e7roleSelectionsSubject.asObservable();
 
+  e7elements$: Observable<E7Element[]> = of([]);
+  e7elementAnalytics$: Observable<ItemAnalytic[]> = of([]);
+  e7elementSelectionsSubject: Subject<ItemSelection[]> = new Subject();
+  e7elementSelections$: Observable<ItemSelection[]> =
+    this.e7elementSelectionsSubject.asObservable();
+
+  e7rarities$: Observable<E7Rarity[]> = of([]);
+  e7rarityAnalytics$: Observable<ItemAnalytic[]> = of([]);
+  e7raritySelectionsSubject: Subject<ItemSelection[]> = new Subject();
+  e7raritySelections$: Observable<ItemSelection[]> =
+    this.e7raritySelectionsSubject.asObservable();
+  // end of e7
+
   constructor(
     private route: ActivatedRoute,
     private gameObjectsQuery: GameObjectsQuery,
@@ -68,9 +88,45 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
     this.e7buffAnalytics$ = this.gameObjectsQuery.e7buffAnalytics$;
     this.e7roles$ = this.gameObjectsQuery.e7roles$;
     this.e7roleAnalytics$ = this.gameObjectsQuery.e7roleAnalytics$;
-    combineLatest([this.filter$, this.e7buffSelections$])
+    this.e7elements$ = this.gameObjectsQuery.e7elements$;
+    this.e7elementAnalytics$ = this.gameObjectsQuery.e7elementsAnalytics$;
+    this.e7rarities$ = this.gameObjectsQuery.e7rarities$;
+    this.e7rarityAnalytics$ = this.gameObjectsQuery.e7raritiesAnalytics$;
+
+    const updateFilterGroup = (
+      draft: WritableDraft<GameObjectsUIState['filter']>,
+      filter: Record<string, any>,
+      groupName: string
+    ) => {
+      if (R.isEmpty(filter)) {
+        delete draft.groups[groupName];
+      } else {
+        draft.groups[groupName] = filter;
+      }
+    };
+
+    this.e7raritySelections$
       .pipe(
-        map(([currentFilter, nextItemSelections]) => {
+        withLatestFrom(this.filter$),
+        map(([nextItemSelections, currentFilter]) => {
+          const filter = itemSelectionsToFilter(
+            nextItemSelections,
+            'or',
+            (id: string) => parseInt(id, 10)
+          );
+          return produce(currentFilter, (draft) => {
+            const groupName = 'rarity';
+            updateFilterGroup(draft, filter, groupName);
+          });
+        }),
+        tap((nextFilter) => this.gameObjectsService.setFilter(nextFilter)),
+        untilDestroyed(this)
+      )
+      .subscribe();
+    this.e7buffSelections$
+      .pipe(
+        withLatestFrom(this.filter$),
+        map(([nextItemSelections, currentFilter]) => {
           const filter = itemSelectionsToFilter(nextItemSelections, 'and');
           return produce(currentFilter, (draft) => {
             const groupName = 'allBuffs.id';
@@ -81,29 +137,37 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
             }
           });
         }),
+        tap((nextFilter) => this.gameObjectsService.setFilter(nextFilter)),
         untilDestroyed(this)
       )
-      .subscribe((nextFilter) => {
-        this.gameObjectsService.setFilter(nextFilter);
-      });
-    combineLatest([this.filter$, this.e7roleSelectionsSubject])
+      .subscribe();
+    this.e7roleSelections$
       .pipe(
-        map(([currentFilter, nextItemSelections]) => {
+        withLatestFrom(this.filter$),
+        map(([nextItemSelections, currentFilter]) => {
           const filter = itemSelectionsToFilter(nextItemSelections, 'or');
           return produce(currentFilter, (draft) => {
             const groupName = 'role';
-            if (R.isEmpty(filter)) {
-              delete draft.groups[groupName];
-            } else {
-              draft.groups[groupName] = filter;
-            }
+            updateFilterGroup(draft, filter, groupName);
           });
         }),
-        untilDestroyed(this)
+        tap((nextFilter) => this.gameObjectsService.setFilter(nextFilter))
       )
-      .subscribe((nextFilter) => {
-        this.gameObjectsService.setFilter(nextFilter);
-      });
+      .subscribe();
+    this.e7elementSelections$
+      .pipe(
+        withLatestFrom(this.filter$),
+        map(([nextItemSelections, currentFilter]) => {
+          const filter = itemSelectionsToFilter(nextItemSelections, 'or');
+          return produce(currentFilter, (draft) => {
+            const groupName = 'attribute';
+            updateFilterGroup(draft, filter, groupName);
+          });
+        }),
+        tap((nextFilter) => this.gameObjectsService.setFilter(nextFilter))
+      )
+      .subscribe();
+    // end of e7
 
     this.route.params
       .pipe(
@@ -113,12 +177,16 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
         untilDestroyed(this)
       )
       .subscribe((gameName) => {
-        this.gameObjectsService.setGameName(gameName);
         if (gameName === 'e7') {
+          this.gameObjectsService.setGameName(gameName);
           this.gameObjectsService
             .getGameObjects(gameName, 'heroes')
             .pipe(untilDestroyed(this))
             .subscribe();
+        } else {
+          this.gameObjectsService.resetUIState();
+          this.gameObjectsService.removeGameObjects();
+          this.gameObjectsService.setGameName(gameName);
         }
       });
   }
@@ -128,11 +196,19 @@ export class DashboardHomePageComponent implements OnInit, OnDestroy {
     this.gameObjectsService.removeGameObjects();
   }
 
-  async handleE7buffSelectionChange(nextItemSelections: ItemSelection[]) {
+  handleE7buffSelectionChange(nextItemSelections: ItemSelection[]) {
     this.e7buffSelectionsSubject.next(nextItemSelections);
   }
 
-  async handleE7roleSelectionChange(nextItemSelections: ItemSelection[]) {
+  handleE7roleSelectionChange(nextItemSelections: ItemSelection[]) {
     this.e7roleSelectionsSubject.next(nextItemSelections);
+  }
+
+  handleE7elementSelectionChange(nextItemSelections: ItemSelection[]) {
+    this.e7elementSelectionsSubject.next(nextItemSelections);
+  }
+
+  handleE7raritySelectionChange(nextItemSelections: ItemSelection[]) {
+    this.e7raritySelectionsSubject.next(nextItemSelections);
   }
 }

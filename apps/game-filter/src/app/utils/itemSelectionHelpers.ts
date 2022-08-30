@@ -2,7 +2,8 @@ import { ItemSelection } from '../interfaces/selection.interface';
 
 export function itemSelectionsToFilter(
   itemSelections: ItemSelection[],
-  andOrOperator: 'and' | 'or'
+  andOrOperator: 'and' | 'or',
+  transformIdFunc?: (id: string) => any
 ): Record<string, any> {
   const op = andOrOperator === 'and' ? '$all' : '$in';
   const filter: { $in?: string[]; $all?: string[]; $nin?: string[] } = {
@@ -10,11 +11,12 @@ export function itemSelectionsToFilter(
     $nin: [],
   };
   for (const sel of itemSelections) {
+    const itemId = transformIdFunc ? transformIdFunc(sel.itemId) : sel.itemId;
     if (sel.isSelected) {
       if (sel.not) {
-        filter.$nin?.push(sel.itemId);
+        filter.$nin?.push(itemId);
       } else {
-        filter[op]?.push(sel.itemId);
+        filter[op]?.push(itemId);
       }
     }
   }

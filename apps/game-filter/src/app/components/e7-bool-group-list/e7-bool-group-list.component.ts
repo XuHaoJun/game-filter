@@ -18,7 +18,12 @@ import {
 import { combineLatest, map, Observable, of } from 'rxjs';
 
 import { ItemAnalytic } from '../../interfaces/analytics.interface';
-import { E7Buff, E7Role } from '../../interfaces/e7.interface';
+import {
+  E7Buff,
+  E7Element,
+  E7Rarity,
+  E7Role
+} from '../../interfaces/e7.interface';
 import { ItemSelection } from '../../interfaces/selection.interface';
 import {
   E7BoolGroupListQuery,
@@ -42,10 +47,12 @@ interface DataSourceItem<T> {
   providers: [E7BoolGroupListStore, E7BoolGroupListQuery],
 })
 export class E7BoolGroupListComponent implements OnInit {
-  @Input() dataType: 'buff' | 'role' = 'buff';
+  @Input() dataType: 'buff' | 'role' | 'element' | 'rarity' = 'buff';
 
-  @Input() dataSource: E7Buff[] | E7Role[] = [];
-  private dataSource$: Observable<E7Buff[] | E7Role[]> = of([]);
+  @Input() dataSource: E7Buff[] | E7Role[] | E7Element[] = [];
+  private dataSource$: Observable<E7BoolGroupListComponent['dataSource']> = of(
+    []
+  );
 
   @Input() itemAnalytics: ItemAnalytic[] = [];
   private itemAnalytics$: Observable<ItemAnalytic[]> = of([]);
@@ -56,10 +63,15 @@ export class E7BoolGroupListComponent implements OnInit {
   @Output() selectionsChange = new EventEmitter<ItemSelection[]>();
 
   _dataSource$: Observable<
-    DataSourceItem<E7Buff>[] | DataSourceItem<E7Role>[]
+    | DataSourceItem<E7Buff>[]
+    | DataSourceItem<E7Role>[]
+    | DataSourceItem<E7Element>[]
+    | DataSourceItem<E7Rarity>[]
   > = of([]);
   public E7BuffItems!: DataSourceItem<E7Buff>[];
   public E7RoleItems!: DataSourceItem<E7Role>[];
+  public E7ElementItems!: DataSourceItem<E7Element>[];
+  public E7RarityItems!: DataSourceItem<E7Rarity>[];
 
   constructor() {
     this.dataSource$ = fromInput<E7BoolGroupListComponent>(this)('dataSource');
@@ -89,7 +101,8 @@ export class E7BoolGroupListComponent implements OnInit {
               numItemCount: 0,
             },
           };
-          const analytic = ys.find((y) => y.itemId === x.id) || defaultAanlytic;
+          const analytic: ItemAnalytic =
+            ys.find((y) => y.itemId === x.id) || defaultAanlytic;
 
           const defaultSelection: ItemSelection = {
             itemId: x.id,
@@ -133,7 +146,7 @@ export class E7BoolGroupListComponent implements OnInit {
         if (nextIsSelected) {
           draft[foundIdx].selectedAt = clickedAt;
         } else {
-          delete draft[foundIdx].selectedAt;
+          draft.splice(foundIdx, 1);
         }
       });
     } else {

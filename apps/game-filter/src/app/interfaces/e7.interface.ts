@@ -70,9 +70,33 @@ export interface E7Role extends ItemIdentity {
   };
 }
 
+export interface E7Element extends ItemIdentity {
+  id: string;
+  name: string;
+  assets: {
+    icon: string;
+  };
+}
+
+export interface E7Rarity extends ItemIdentity {
+  id: string;
+  name: string;
+  assets: {
+    icon: string;
+  };
+}
+
 export interface E7HeroesResponse {
   total: number;
   heroes: E7SimpleHero[];
   buffs: E7Buff[];
   roles: E7Role[];
+  elements: E7Element[];
+  rarities: E7Rarity[];
+}
+
+export interface E7Resources {
+  roles: E7Role[];
+  elements: E7Element[];
+  rarities: E7Rarity[];
 }

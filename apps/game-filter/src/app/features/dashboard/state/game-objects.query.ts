@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HashMap, QueryEntity } from '@datorama/akita';
+import { QueryEntity } from '@datorama/akita';
 import * as R from 'rambda';
 import { flatten as _flatten } from 'rambda';
 import { combineLatest, distinctUntilChanged, map, Observable } from 'rxjs';
@@ -16,9 +16,13 @@ import { GameObjectsStore } from './game-objects.store';
 
 @Injectable({ providedIn: 'root' })
 export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
-  gameName$ = this.select((state) => state.ui.gameName);
+  private ui$ = this.select((state) => state.ui).pipe(
+    distinctUntilChanged<GameObjectsState['ui']>(R.equals)
+  );
 
-  filter$ = this.select((state) => state.ui.filter).pipe(
+  gameName$ = this.ui$.pipe(map((uiState) => uiState.gameName));
+  filter$ = this.ui$.pipe(
+    map((state) => state.filter),
     distinctUntilChanged<GameObjectFilter>(R.equals)
   );
   filteredGameObjects$ = combineLatest([this.filter$, this.selectAll()]).pipe(
@@ -34,14 +38,16 @@ export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
   );
 
   // e7 stuff
-  e7buffs$ = this.select().pipe(
-    map<GameObjectsState, E7Buff[]>((state) => {
-      if (state.ui.gameName !== 'e7') {
+  e7$ = this.select((state) => state.e7).pipe(
+    distinctUntilChanged<GameObjectsState['e7']>(R.equals)
+  );
+  e7buffs$ = combineLatest([this.gameName$, this.filteredGameObjects$]).pipe(
+    map(([gameName, gameObjs]) => {
+      if (gameName !== 'e7') {
         return [];
       } else {
-        const heroes = (state.entities || {}) as HashMap<E7Hero>;
+        const heroes = gameObjs as E7Hero[];
         return R.pipe(
-          R.values,
           R.map<E7Hero, E7Buff[]>((h: E7Hero) => R.uniq(h.allBuffs)),
           _flatten<E7Buff>,
           R.uniq
@@ -50,12 +56,12 @@ export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
     })
   );
   e7buffAnalytics$: Observable<ItemAnalytic[]> = combineLatest([
-    this.select(),
+    this.gameName$,
     this.e7buffs$,
     this.filteredGameObjects$,
   ]).pipe(
-    map(([state, e7buffs, _xs]) => {
-      if (state.ui.gameName !== 'e7') {
+    map(([gameName, e7buffs, _xs]) => {
+      if (gameName !== 'e7') {
         return [];
       } else {
         const xs = _xs as E7Hero[];
@@ -65,18 +71,56 @@ export class GameObjectsQuery extends QueryEntity<GameObjectsState> {
       }
     })
   );
-  e7roles$ = this.select((state) => state.e7.roles);
+  e7roles$ = this.e7$.pipe(map((e7) => e7.roles));
   e7roleAnalytics$: Observable<ItemAnalytic[]> = combineLatest([
-    this.select(),
+    this.gameName$,
     this.e7roles$,
     this.filteredGameObjects$,
   ]).pipe(
-    map(([state, e7roles, _xs]) => {
-      if (state.ui.gameName !== 'e7') {
+    map(([gameName, e7roles, _xs]) => {
+      if (gameName !== 'e7') {
         return [];
       } else {
         const xs = _xs as E7Hero[];
         return getE7Analytics(xs, e7roles, (x, item) => x.role === item.id);
+      }
+    })
+  );
+  e7elements$ = this.e7$.pipe(map((e7) => e7.elements));
+  e7elementsAnalytics$: Observable<ItemAnalytic[]> = combineLatest([
+    this.gameName$,
+    this.e7elements$,
+    this.filteredGameObjects$,
+  ]).pipe(
+    map(([gameName, e7elemnts, _xs]) => {
+      if (gameName !== 'e7') {
+        return [];
+      } else {
+        const xs = _xs as E7Hero[];
+        return getE7Analytics(
+          xs,
+          e7elemnts,
+          (x, item) => x.attribute === item.id
+        );
+      }
+    })
+  );
+  e7rarities$ = this.e7$.pipe(map((e7) => e7.rarities));
+  e7raritiesAnalytics$: Observable<ItemAnalytic[]> = combineLatest([
+    this.gameName$,
+    this.e7rarities$,
+    this.filteredGameObjects$,
+  ]).pipe(
+    map(([gameName, e7rarities, _xs]) => {
+      if (gameName !== 'e7') {
+        return [];
+      } else {
+        const xs = _xs as E7Hero[];
+        return getE7Analytics(
+          xs,
+          e7rarities,
+          (x, item) => `${x.rarity}` === item.id
+        );
       }
     })
   );

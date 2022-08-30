@@ -1,6 +1,6 @@
 import { EntityState } from '@datorama/akita';
+import type { E7Resources } from '../../../interfaces/e7.interface';
 
-import { E7Role } from '../../../interfaces/e7.interface';
 
 export type GameObject = Record<string, any>;
 
@@ -16,9 +16,7 @@ export interface GameObjectsState extends EntityState<GameObject, string> {
     filter: GameObjectFilter;
   };
 
-  e7: {
-    roles: E7Role[];
-  };
+  e7: E7Resources;
 }
 
 export type GameObjectsUIState = GameObjectsState['ui'];
@@ -39,6 +37,8 @@ export function createInitState(): GameObjectsState {
     ui: createUIInitState(),
     e7: {
       roles: [],
+      elements: [],
+      rarities: [],
     },
   };
 }

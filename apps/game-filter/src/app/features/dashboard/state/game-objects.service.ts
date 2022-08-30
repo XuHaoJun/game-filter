@@ -34,10 +34,6 @@ export class GameObjectsService {
     this.gameObjectsStore.updateUI({ filter });
   }
 
-  setFilterBySelections() {
-    // this.gameObjectsStore.updateUI({ filter });
-  }
-
   getGameObjects(
     gameName: 'e7',
     category: string
@@ -58,6 +54,8 @@ export class GameObjectsService {
               this.gameObjectsStore.update((state) => {
                 return produce(state, (draft) => {
                   draft.e7.roles = heroesRes.roles;
+                  draft.e7.elements = heroesRes.elements;
+                  draft.e7.rarities = heroesRes.rarities;
                 });
               });
               this.gameObjectsStore.setLoading(false);
