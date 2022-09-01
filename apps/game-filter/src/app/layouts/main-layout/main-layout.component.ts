@@ -4,11 +4,10 @@ import {
   Input,
   OnInit
 } from '@angular/core';
-import { UntilDestroy } from '@ngneat/until-destroy';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { fromInput } from 'observable-from-input';
 import { combineLatest, map, Observable, of } from 'rxjs';
 
-import { GameObjectsService } from '../../features/dashboard/state/game-objects.service';
 import type { GameInfo } from '../../states/game-infos/game-infos.model';
 
 interface GameLink extends GameInfo {
@@ -35,7 +34,7 @@ export class MainLayoutComponent implements OnInit {
 
   gameLinks$: Observable<GameLink[]> = of([]);
 
-  constructor(private gameObjectsService: GameObjectsService) {
+  constructor() {
     this.gameName$ = fromInput<MainLayoutComponent>(this)('gameName');
     this.gameInfos$ = fromInput<MainLayoutComponent>(this)('gameInfos');
   }
@@ -51,7 +50,8 @@ export class MainLayoutComponent implements OnInit {
             id: `navbar-games-${g.name}`,
           },
         }))
-      )
+      ),
+      untilDestroyed(this)
     );
   }
 }
