@@ -2,7 +2,14 @@
 
 Online demo: [http:/game-filter.herokuapp.com](http:/game-filter.herokuapp.com)
 
+
 ## GameFilter backend repo
+
+```shell
+# require set api_proxy
+# ex:
+API_PROXY=https:/game-filter-server.herokuapp.com
+```
 
 [https://github.com/XuHaoJun/game-filter-bakcend](https://github.com/XuHaoJun/game-filter-bakcend)
 
