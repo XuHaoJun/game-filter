@@ -1,0 +1,5 @@
+<p>rating</p>
+
+<span class="star" *ngFor="let star of stars$ | async"></span>
+
+<button (click)="handleFullStarClick()" *ngIf="!disabled">Full stars</button>

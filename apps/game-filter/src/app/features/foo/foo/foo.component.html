@@ -1,0 +1,16 @@
+<p>foo works!</p>
+{{ formGroup.value | json }}
+{{ formGroup.status }}
+{{ formGroup.errors | json }}
+<form novalidate [formGroup]="formGroup" (ngSubmit)="handleSubmit($event)">
+  <input type="number" formControlName="a" />
+
+  <div formGroupName="c">
+    <input formControlName="d" />
+  </div>
+
+  <game-filter-rating formControlName="b"></game-filter-rating>
+  <button type="button">submit</button>
+</form>
+
+<button (click)="handleEnable()"> enable </button>
