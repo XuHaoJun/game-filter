@@ -27,7 +27,7 @@
         matBadgeColor="accent"
         (click)="handleClickListItem($event, item)"
       >
-        <img [src]="item.value.assets.icon" />
+        <img [src]="item.value.assets.icon" [alt]="item.value.name" />
       </span>
     </div>
   </ng-container>
@@ -42,7 +42,7 @@
         matBadgeColor="accent"
         (click)="handleClickListItem($event, item)"
       >
-        <img [src]="item.value.assets.icon" />
+        <img [src]="item.value.assets.icon" [alt]="item.value.name" />
       </span>
     </div>
   </ng-container>
@@ -61,7 +61,7 @@
           <span class="antialiased text-3xl">
             {{ item.value.name }}
           </span>
-          <img [src]="item.value.assets.icon" />
+          <img [src]="item.value.assets.icon" alt="星" />
         </span>
       </div>
     </div>
