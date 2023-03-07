@@ -1,6 +1,6 @@
 <ng-container [ngSwitch]="dataType">
   <ng-container *ngSwitchCase="'buff'">
-    <mat-list dense *ngFor="let item of _dataSource$ | async | as: E7BuffItems">
+    <mat-action-list dense *ngFor="let item of _dataSource$ | async | as: E7BuffItems">
       <mat-list-item
         (click)="handleClickListItem($event, item)"
         [class.bg-green-100]="item.selection.isSelected"
@@ -14,11 +14,11 @@
           <span> {{ item.analytic.usedRate | usedRate }}% </span>
         </div>
       </mat-list-item>
-    </mat-list>
+    </mat-action-list>
   </ng-container>
 
   <ng-container *ngSwitchCase="'role'">
-    <div class="flex flex-row gap-4">
+    <button class="flex flex-row gap-4">
       <span
         *ngFor="let item of _dataSource$ | async | as: E7RoleItems"
         [class.bg-green-100]="item.selection.isSelected"
@@ -29,11 +29,11 @@
       >
         <img [src]="item.value.assets.icon" [alt]="item.value.name" />
       </span>
-    </div>
+    </button>
   </ng-container>
 
   <ng-container *ngSwitchCase="'element'">
-    <div class="flex flex-row gap-8">
+    <button class="flex flex-row gap-8">
       <span
         *ngFor="let item of _dataSource$ | async | as: E7ElementItems"
         [class.bg-green-100]="item.selection.isSelected"
@@ -44,11 +44,11 @@
       >
         <img [src]="item.value.assets.icon" [alt]="item.value.name" />
       </span>
-    </div>
+    </button>
   </ng-container>
 
   <ng-container *ngSwitchCase="'rarity'">
-    <div class="flex flex-row gap-8">
+    <button class="flex flex-row gap-8">
       <div
         *ngFor="let item of _dataSource$ | async | as: E7RarityItems"
         [class.bg-green-100]="item.selection.isSelected"
@@ -64,6 +64,6 @@
           <img [src]="item.value.assets.icon" alt="星" />
         </span>
       </div>
-    </div>
+    </button>
   </ng-container>
 </ng-container>
