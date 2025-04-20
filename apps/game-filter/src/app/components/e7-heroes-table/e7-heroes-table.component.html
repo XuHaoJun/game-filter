@@ -3,7 +3,7 @@
     <th mat-header-cell *matHeaderCellDef>Hero</th>
     <td mat-cell *matCellDef="let element">
       <div class="flex flex-col items-center justify-start">
-        <img class="e7-hero-avatar" src="{{ element.assets.icon }}" />{{
+        <img class="e7-hero-avatar" src="assets/e7/hero/{{ element.id }}_s.png" />{{
           element.name
         }}
       </div>
@@ -30,7 +30,7 @@
     <td mat-cell *matCellDef="let element" class="max-w-md">
       <mat-list>
         <mat-list-item *ngFor="let buff of element.allBuffs">
-          <img src="{{ buff.assets.icon }}" class="mr-2" />
+          <img src="assets/e7/status-effect/{{ buff.enName }}.png" class="mr-2" />
           <span
             [class.buff-type]="buff.type === 'buff'"
             [class.debuff-type]="buff.type === 'debuff'"

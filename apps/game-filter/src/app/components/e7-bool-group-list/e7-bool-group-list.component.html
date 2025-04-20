@@ -6,7 +6,7 @@
         [class.bg-green-100]="item.selection.isSelected"
       >
         <div class="flex flex-row items-center w-full">
-          <img [src]="item.value.assets.icon" class="mr-2" />
+          <img src="assets/e7/status-effect/{{ item.value.enName }}.png" class="mr-2" />
           <span>
             {{ item.value.name }}
           </span>
@@ -27,7 +27,7 @@
         matBadgeColor="accent"
         (click)="handleClickListItem($event, item)"
       >
-        <img [src]="item.value.assets.icon" [alt]="item.value.name" />
+        <img src="assets/e7/role/{{ item.value.name }}.png" [alt]="item.value.name" />
       </span>
     </button>
   </ng-container>
@@ -42,7 +42,7 @@
         matBadgeColor="accent"
         (click)="handleClickListItem($event, item)"
       >
-        <img [src]="item.value.assets.icon" [alt]="item.value.name" />
+        <img src="assets/e7/element/{{ item.value.name }}.png" [alt]="item.value.name" />
       </span>
     </button>
   </ng-container>
@@ -61,7 +61,7 @@
           <span class="antialiased text-3xl">
             {{ item.value.name }}
           </span>
-          <img [src]="item.value.assets.icon" alt="星" />
+          <img src="assets/e7/star.png" alt="星" />
         </span>
       </div>
     </button>

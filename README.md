@@ -1,6 +1,6 @@
 # GameFilter
 
-Online demo: [http:/game-filter.herokuapp.com](http:/game-filter.herokuapp.com)
+[Online demo](https://xasoinjvkyjm.ap-northeast-1.clawcloudrun.com/games/e7)
 
 
 ## GameFilter backend repo

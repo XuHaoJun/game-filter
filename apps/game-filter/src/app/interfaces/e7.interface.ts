@@ -54,6 +54,7 @@ export interface E7Buff extends ItemIdentity {
   id: string;
   type: string;
   name: string;
+  enName?: string;
   effect: string;
   assets: {
     icon: string;
